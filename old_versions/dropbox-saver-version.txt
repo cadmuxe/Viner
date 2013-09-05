@@ -1,0 +1,22 @@
+javascript:
+function load(){
+var d = document, jq=d.createElement('scr'+'ipt'),b = d.body,l=d.location;
+var dp=d.createElement('scr'+'ipt');
+jq.setAttribute('src',l.protocol+'//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js');
+dp.setAttribute('src',l.protocol+'//www.dropbox.com/static/api/1/dropins.js');
+dp.setAttribute('id','dropboxjs');
+dp.setAttribute('data-app-key','*******');
+b.appendChild(jq);
+b.appendChild(dp);
+}
+function save1024(){
+var plist =$($('div#main div.tpc_content')[0]).find('input');
+var files=[];
+for(var i=0; i < plist.length; i++){
+	files.push({'url':plist[i].src});
+}
+options={'files':files};
+Dropbox.save(options);}
+load();
+save1024();
+void(0)
