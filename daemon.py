@@ -18,12 +18,10 @@ class ThreadWork(threading.Thread):
             self.queue.task_done()
     def process(self, item):
         print item.token
-        return
         dropb = dropbox.client.DropboxClient(item.token)
         for i in item.items:
             img = urllib2.urlopen(i[1]).read()
             dropb.put_file(i[0], img)
-            img.close()
 
 class Server():
     """ serve for the coming download """
@@ -33,6 +31,7 @@ class Server():
         self.port = port
     def handle(self, conn, address):
         """   """
+        print "Conncetion from %s" % str(address)
         msg = ""
         while True:
             chunk = conn.recv(1024)
@@ -40,6 +39,7 @@ class Server():
                 break
             msg += chunk
         conn.close()
+        print "Disconnect with %s" % str(address)
         item = pickle.loads(msg)
         self.queue.put(item)
     def run(self):

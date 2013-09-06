@@ -90,7 +90,7 @@ def api_saver():
     if "email" not in session:
         return json.dumps({"status":"nologin"})
     else:
-        info = request.form["data"]
+        info = json.loads(request.form["data"])
         print info
         website = info["website"]
         title = info["title"]
