@@ -1,4 +1,4 @@
-import threading
+import threading, pymongo
 import Queue
 import socket
 import pickle
@@ -21,7 +21,19 @@ class ThreadWork(threading.Thread):
         dropb = dropbox.client.DropboxClient(item.token)
         for i in item.items:
             img = urllib2.urlopen(i[1]).read()
-            dropb.put_file(i[0], img)
+            try:
+                dropb.put_file(i[0], img)
+            except dropbox.rest.ErrorResponse as e:
+                if e.status == 401:
+                    conn = pymongo.Connection("localhost", 27017)
+                    db = conn["saver1024"]
+                    u = db["users"].find_one({"email":item.email})
+                    if u.has_key("token"):
+                        u.pop("token")
+                    db["users"].save(u)
+                    conn.close()
+                    print "The user have deauthorised the access."
+                    break
 
 class Server():
     """ serve for the coming download """
